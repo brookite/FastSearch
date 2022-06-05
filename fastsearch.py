@@ -3,9 +3,10 @@ import time
 import pytesseract
 import sys
 import webbrowser
+import io
 import urllib.parse
 
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 import pyclip
 
 SEARCH_URL = "https://yandex.ru/search/?lr=38&text={}"
@@ -33,6 +34,10 @@ class ClipboardImageListener(threading.Thread):
             try:
                 time.sleep(1)
                 img = ImageGrab.grabclipboard()
+                if img:
+                    imgbytes = io.BytesIO()
+                    img.save(imgbytes, format='PNG')
+                    img = Image.open(imgbytes)
             except OSError:
                 time.sleep(0.5)
                 continue
