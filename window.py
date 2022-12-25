@@ -1,8 +1,8 @@
 import os.path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QColorConstants
-from PySide6.QtWidgets import QMainWindow, QListWidgetItem
+from PySide6.QtGui import QColorConstants, QCloseEvent
+from PySide6.QtWidgets import QMainWindow, QListWidgetItem, QMessageBox
 
 from core import TesseractEngine, ClipboardImageListener, JSONSettings
 from fsgui import Ui_FSWindow
@@ -29,7 +29,28 @@ class FSWindow(QMainWindow, Ui_FSWindow):
                 item = self.langs.item(i)
                 if item.text() == lang:
                     item.setCheckState(Qt.Checked)
+        self.searchInWeb.setChecked(self._settings["webSearch"])
+        self.copyToClipboard.setChecked(self._settings["copy"])
+        self.searchEngine.setCurrentIndex(self._settings["engine"])
+        self.searchInWeb.stateChanged.connect(self.search_web_state_changed)
+        self.copyToClipboard.stateChanged.connect(self.copy_clipboard_state_changed)
+        self.searchEngine.currentIndexChanged.connect(self.search_engine_changed)
 
+    def closeEvent(self, event: QCloseEvent):
+        if self._background_service.is_alive():
+            self._background_service.destroy()
+
+    def copy_clipboard_state_changed(self, state):
+        self._settings["copy"] = bool(state)
+        self._settings.save()
+
+    def search_web_state_changed(self, state):
+        self._settings["webSearch"] = bool(state)
+        self._settings.save()
+
+    def search_engine_changed(self):
+        self._settings["engine"] = self.searchEngine.currentIndex()
+        self._settings.save()
 
     def send2tesseract(self, img):
         return self._engine.img2tesseract(
@@ -38,6 +59,9 @@ class FSWindow(QMainWindow, Ui_FSWindow):
         )
 
     def handle_launch(self):
+        if not len(self._engine.selected_langs):
+            QMessageBox.warning(self, "Языки не указаны", "Выберите хотя бы один язык для распознавания")
+            return
         self._launch_state = not self._launch_state
         if self._launch_state:
             self._background_service.start()

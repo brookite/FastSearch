@@ -28,6 +28,14 @@ def get_clipboardimg():
 
 
 def find_tesseract():
+    if os.path.exists("tesseract"):
+        if os.path.isdir("tesseract"):
+            for file in os.listdir("tesseract"):
+                if file.lower().startswith("tesseract"):
+                    filepath = os.path.join("tesseract", file)
+                    if os.access(filepath, os.X_OK):
+                        print("Found local binary of tesseract library")
+                        return filepath
     return shutil.which("tesseract")
 
 
@@ -38,7 +46,6 @@ class JSONSettings(dict):
             self.load()
         else:
             super().__init__({
-                "grabengine": "qt",
                 "langs": [],
                 "engine": 0,
                 "copy": True,
