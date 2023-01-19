@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>recordForm</class>
+ <widget class="QWidget" name="recordForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>565</width>
+    <height>336</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Сохраненные записи</string>
+  </property>
+  <property name="toolTipDuration">
+   <number>-1</number>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QListWidget" name="records">
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Меню
+How can I get the indices of QListWidget::selectedItems()?
+stackoverflow.com›…how…of-qlistwidgetselecteditems
+I have QListWidget and I need to get the indices of selected items. QListWidget has a method named selectedIndexes as well, but it is a protected one, so you have to use such a tricky way to get them. Share. Improve this answer.</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>gdfgfgfgfgfgfgfgfgfggfgfgdgfddfg</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="copy">
+     <property name="text">
+      <string>Копировать в буфер обмена</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

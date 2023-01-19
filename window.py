@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QMainWindow, QListWidgetItem, QMessageBox
 
 from core import TesseractEngine, ClipboardImageListener, JSONSettings
 from fsgui import Ui_FSWindow
+from recordwindow import RecordWindow
 
 
 class FSWindow(QMainWindow, Ui_FSWindow):
@@ -14,6 +15,7 @@ class FSWindow(QMainWindow, Ui_FSWindow):
         self._engine = engine
         self._settings = JSONSettings(os.path.expanduser("~/.fastsearch"))
         self._launch_state = False
+        self._record_window = None
         self._background_service = ClipboardImageListener(self.send2tesseract)
         self.setupUi(self)
         for lang in self._engine.langs:
@@ -22,6 +24,7 @@ class FSWindow(QMainWindow, Ui_FSWindow):
         self.langs.itemChanged.connect(self.select_lang)
         self.upLang.clicked.connect(self.moveUpLang)
         self.downLang.clicked.connect(self.moveDownLang)
+        self.savedRecordsBtn.clicked.connect(self.open_records)
         self._checked_langs = self._collect_checked_langs()
         self.startServiceBtn.clicked.connect(self.handle_launch)
         for lang in self._settings["langs"][::-1]:
@@ -51,6 +54,11 @@ class FSWindow(QMainWindow, Ui_FSWindow):
     def search_engine_changed(self):
         self._settings["engine"] = self.searchEngine.currentIndex()
         self._settings.save()
+
+    def open_records(self):
+        if self._record_window is None:
+            self._record_window = RecordWindow(self._engine)
+        self._record_window.show()
 
     def send2tesseract(self, img):
         return self._engine.img2tesseract(
