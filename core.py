@@ -13,6 +13,8 @@ import time
 from PySide6.QtGui import QClipboard
 from PySide6.QtWidgets import QApplication
 
+from pyclip import copy as copy_to_clipboard
+
 CLIPBOARD: Optional[QClipboard] = None
 
 
@@ -119,7 +121,7 @@ class TesseractEngine:
             url = self.WEBENGINE_TEMPLATES[webengine_index].format(safe_string)
             webbrowser.open(url)
         if clipboard_copy:
-            CLIPBOARD.setText(text)
+            copy_to_clipboard(text)
         if store:
             self.records.append(text)
         print(f"Copied text: {text}")
